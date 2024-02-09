@@ -1,0 +1,135 @@
+{
+	"info": {
+		"_postman_id": "8f7119ee-3bad-467c-8b92-ac91371bfa6e",
+		"name": "Spring-kv",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "32775060",
+		"_collection_link": "https://solar-rocket-694475.postman.co/workspace/My-Workspace~f57bbc87-640d-4cd7-8334-dd94fb1d8760/collection/32775060-8f7119ee-3bad-467c-8b92-ac91371bfa6e?action=share&source=collection_link&creator=32775060"
+	},
+	"item": [
+		{
+			"name": "save",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"id\": \"12xvxc345ssdsds-5088\",\n    \"plan_data\": {\n\n\t\"planCostShares\": {\n\t\t\"deductible\": 20000,\n\t\t\"_org\": \"example.com\",\n\t\t\"copay\": 23,\n\t\t\"objectId\": \"1234vxc2324sdf-501\",\n\t\t\"objectType\": \"membercostshare\"\n\t\t\n\t},\n\t\"linkedPlanServices\": [{\n\t\t\"linkedService\": {\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"objectId\": \"1234520xvc30asdf-502\",\n\t\t\t\"objectType\": \"service\",\n\t\t\t\"name\": \"Yearly physical\"\n\t\t},\n\t\t\"planserviceCostShares\": {\n\t\t\t\"deductible\": 10,\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"copay\": 0,\n\t\t\t\"objectId\": \"1234512xvc1314asdfs-503\",\n\t\t\t\"objectType\": \"membercostshare\"\n\t\t},\n\t\t\"_org\": \"example.com\",\n\t\t\"objectId\": \"27283xvx9asdff-504\",\n\t\t\"objectType\": \"planservice\"\n\t}, {\n\t\t\"linkedService\": {\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"objectId\": \"1234520xvc30sfs-505\",\n\t\t\t\"objectType\": \"service\",\n\t\t\t\"name\": \"well baby\"\n\t\t},\n\t\t\"planserviceCostShares\": {\n\t\t\t\"deductible\": 10,\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"copay\": 175,\n\t\t\t\"objectId\": \"1234512xvc1314sdfsd-506\",\n\t\t\t\"objectType\": \"membercostshare\"\n\t\t},\n\t\t\n\t\t\"_org\": \"example.com\",\n\t\t\n\t\t\"objectId\": \"27283xvx9sdf-507\",\n\t\t\"objectType\": \"planservice\"\n\t}],\n\n\n\t\"_org\": \"example.com\",\n\t\"objectId\": \"12xvxc345ssdsds-508\",\n\t\"objectType\": \"plan\",\n\t\"planType\": \"inNetwork\",\n\t\"creationDate\": \"12-12-2017\"\n}\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/save",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"save"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "If-None-Match",
+						"value": "60ac2a52017b91cb343f7a6ec858cb36575b9fd26c0dedf7e106146f9dc70826",
+						"type": "text",
+						"disabled": true
+					}
+				],
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-5088",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"12xvxc345ssdsds-5088"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "all",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/all",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"all"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-5088",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"12xvxc345ssdsds-5088"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "HOST-NAME",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "PORT",
+			"value": "8080",
+			"type": "string"
+		}
+	]
+}
