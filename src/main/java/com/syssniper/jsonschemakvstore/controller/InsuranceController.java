@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 
 @RestController
@@ -82,7 +83,9 @@ public class InsuranceController {
             if(body == null){
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Json");
             }
-            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, currentEtag).body(body);
+             LinkedHashMap new_plan = insuranceImpl.find(id);
+            String newEtag = getEtag(new_plan);
+            return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, newEtag).body(body);
         } else {
             // ETag does not match or was not provided, return missmatch error
             return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).build();
@@ -99,8 +102,16 @@ public class InsuranceController {
     }
 
     @GetMapping("/all")
-    public Object[] getAll() {
-        return insuranceImpl.findAll();
+    public ResponseEntity<Object[]> getAll(
+            @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag
+    ) throws NoSuchAlgorithmException {
+        Object[] result = insuranceImpl.findAll();
+        String currentEtag = generateEtag(Arrays.toString(result));
+         if (eTag != null && !eTag.equals(currentEtag)) {
+            // ETag matches, return  304 Not Modified
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+        return ResponseEntity.ok().header(HttpHeaders.ETAG, currentEtag).body(result);
     }
 
     @PutMapping("/{id}")
