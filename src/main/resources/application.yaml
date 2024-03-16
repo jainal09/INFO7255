@@ -1,0 +1,24 @@
+spring:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      database: 0
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 1016314922111-1l894a7ott039bu528tove309kohlrt6.apps.googleusercontent.com
+            client-secret: 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
+            scope: openid,profile,email
+      resourceserver:
+        jwt:
+          issuer-uri: https://accounts.google.com
+          jwk-set-uri: https://www.googleapis.com/oauth2/v3/certs
+
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web: DEBUG
+    org.springframework.security.oauth2:  DEBUG
