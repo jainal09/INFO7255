@@ -1,10 +1,10 @@
 {
 	"info": {
-		"_postman_id": "8f7119ee-3bad-467c-8b92-ac91371bfa6e",
-		"name": "Spring-kv",
+		"_postman_id": "4d0ce28e-ee62-40b0-9ee2-eeece41c72e1",
+		"name": "Data Indexing Info",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "32775060",
-		"_collection_link": "https://solar-rocket-694475.postman.co/workspace/My-Workspace~f57bbc87-640d-4cd7-8334-dd94fb1d8760/collection/32775060-8f7119ee-3bad-467c-8b92-ac91371bfa6e?action=share&source=collection_link&creator=32775060"
+		"_exporter_id": "6671220",
+		"_collection_link": "https://galactic-meadow-5914.postman.co/workspace/My-Workspace~e6f358a8-f095-47d1-8995-999002dc9578/collection/6671220-4d0ce28e-ee62-40b0-9ee2-eeece41c72e1?action=share&source=collection_link&creator=6671220"
 	},
 	"item": [
 		{
@@ -14,7 +14,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"id\": \"12xvxc345ssdsds-5088\",\n    \"plan_data\": {\n\n\t\"planCostShares\": {\n\t\t\"deductible\": 20000,\n\t\t\"_org\": \"example.com\",\n\t\t\"copay\": 23,\n\t\t\"objectId\": \"1234vxc2324sdf-501\",\n\t\t\"objectType\": \"membercostshare\"\n\t\t\n\t},\n\t\"linkedPlanServices\": [{\n\t\t\"linkedService\": {\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"objectId\": \"1234520xvc30asdf-502\",\n\t\t\t\"objectType\": \"service\",\n\t\t\t\"name\": \"Yearly physical\"\n\t\t},\n\t\t\"planserviceCostShares\": {\n\t\t\t\"deductible\": 10,\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"copay\": 0,\n\t\t\t\"objectId\": \"1234512xvc1314asdfs-503\",\n\t\t\t\"objectType\": \"membercostshare\"\n\t\t},\n\t\t\"_org\": \"example.com\",\n\t\t\"objectId\": \"27283xvx9asdff-504\",\n\t\t\"objectType\": \"planservice\"\n\t}, {\n\t\t\"linkedService\": {\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"objectId\": \"1234520xvc30sfs-505\",\n\t\t\t\"objectType\": \"service\",\n\t\t\t\"name\": \"well baby\"\n\t\t},\n\t\t\"planserviceCostShares\": {\n\t\t\t\"deductible\": 10,\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"copay\": 175,\n\t\t\t\"objectId\": \"1234512xvc1314sdfsd-506\",\n\t\t\t\"objectType\": \"membercostshare\"\n\t\t},\n\t\t\n\t\t\"_org\": \"example.com\",\n\t\t\n\t\t\"objectId\": \"27283xvx9sdf-507\",\n\t\t\"objectType\": \"planservice\"\n\t}],\n\n\n\t\"_org\": \"example.com\",\n\t\"objectId\": \"12xvxc345ssdsds-508\",\n\t\"objectType\": \"plan\",\n\t\"planType\": \"inNetwork\",\n\t\"creationDate\": \"12-12-2017\"\n}\n}",
+					"raw": "{\n    \"planCostShares\": {\n        \"deductible\": 10000,\n        \"_org\": \"example.com\",\n        \"copay\": 23,\n        \"objectId\": \"1234vxc2324sdf-501\",\n        \"objectType\": \"membercostshare\"\n    },\n    \"linkedPlanServices\": [\n        {\n            \"linkedService\": {\n                \"_org\": \"example.com\",\n                \"objectId\": \"1234520xvc30asdf-501\",\n                \"objectType\": \"service\",\n                \"name\": \"Yearly physical\"\n            },\n            \"planserviceCostShares\": {\n                \"deductible\": 10,\n                \"_org\": \"example.com\",\n                \"copay\": 0,\n                \"objectId\": \"1234512xvc1314asdfs-503\",\n                \"objectType\": \"membercostshare\"\n            },\n            \"_org\": \"example.com\",\n            \"objectId\": \"27283xvx9asdff-504\",\n            \"objectType\": \"planservice\"\n        },\n        {\n            \"linkedService\": {\n                \"_org\": \"example.com\",\n                \"objectId\": \"1234520xvc30sfs-505\",\n                \"objectType\": \"service\",\n                \"name\": \"well baby\"\n            },\n            \"planserviceCostShares\": {\n                \"deductible\": 10,\n                \"_org\": \"example.com\",\n                \"copay\": 175,\n                \"objectId\": \"1234512xvc1314sdfsd-506\",\n                \"objectType\": \"membercostshare\"\n            },\n            \"_org\": \"example.com\",\n            \"objectId\": \"27283xvx9sdf-507\",\n            \"objectType\": \"planservice\"\n        }\n    ],\n    \"_org\": \"example.com\",\n    \"objectId\": \"12xvxc345ssdsds-512\",\n    \"objectType\": \"plan\",\n    \"planType\": \"inNetwork\",\n    \"creationDate\": \"12-12-2017\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -22,14 +22,14 @@
 					}
 				},
 				"url": {
-					"raw": "{{HOST-NAME}}:{{PORT}}/api/save",
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/",
 					"host": [
 						"{{HOST-NAME}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"save"
+						""
 					]
 				}
 			},
@@ -42,20 +42,20 @@
 				"header": [
 					{
 						"key": "If-None-Match",
-						"value": "60ac2a52017b91cb343f7a6ec858cb36575b9fd26c0dedf7e106146f9dc70826",
+						"value": "c5ac967f5fc93495b58ca54cf424f866cecb16f3a638d9ec71d37253f95f6bee",
 						"type": "text",
 						"disabled": true
 					}
 				],
 				"url": {
-					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-5088",
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-508",
 					"host": [
 						"{{HOST-NAME}}"
 					],
 					"port": "{{PORT}}",
 					"path": [
 						"api",
-						"12xvxc345ssdsds-5088"
+						"12xvxc345ssdsds-508"
 					]
 				}
 			},
@@ -98,8 +98,111 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "patch",
+			"request": {
+				"method": "PATCH",
+				"header": [
+					{
+						"key": "If-None-Match",
+						"value": "f1eeef3cd57a2c5cc94c5cdcf13f57db09e7b03d2a7c2217588d4ffca52d671f",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\t\"linkedService\": {\n\t\t\t\"_org\": \"new.com\",\n\t\t\t\"objectId\": \"12xvxc345ssdsds-510\",\n\t\t\t\"objectType\": \"service\",\n\t\t\t\"name\": \"Yearly physical\"\n\t\t},\n\t\t\"planserviceCostShares\": {\n\t\t\t\"deductible\": 10,\n\t\t\t\"_org\": \"example.com\",\n\t\t\t\"copay\": 0,\n\t\t\t\"objectId\": \"1234512xvc1314asdfs-503\",\n\t\t\t\"objectType\": \"membercostshare\"\n\t\t},\n\t\t\"_org\": \"example.com\",\n\t\t\"objectId\": \"12xvxc345ssdsds-510\",\n\t\t\"objectType\": \"planservice\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-510",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"12xvxc345ssdsds-510"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "{{HOST-NAME}}:{{PORT}}/api/12xvxc345ssdsds-511",
+					"host": [
+						"{{HOST-NAME}}"
+					],
+					"port": "{{PORT}}",
+					"path": [
+						"api",
+						"12xvxc345ssdsds-511"
+					]
+				}
+			},
+			"response": []
 		}
 	],
+	"auth": {
+		"type": "oauth2",
+		"oauth2": [
+			{
+				"key": "useBrowser",
+				"value": true,
+				"type": "boolean"
+			},
+			{
+				"key": "scope",
+				"value": "openid",
+				"type": "string"
+			},
+			{
+				"key": "clientSecret",
+				"value": "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",
+				"type": "string"
+			},
+			{
+				"key": "clientId",
+				"value": "669229919521-6cnv5sde8vhlk5c3fmpsmqh1b585co1r.apps.googleusercontent.com",
+				"type": "string"
+			},
+			{
+				"key": "authUrl",
+				"value": "https://accounts.google.com/o/oauth2/v2/auth",
+				"type": "string"
+			},
+			{
+				"key": "accessTokenUrl",
+				"value": "https://oauth2.googleapis.com/token",
+				"type": "string"
+			},
+			{
+				"key": "redirect_uri",
+				"value": "https://accounts-google.com/o/oauth2/v2/auth",
+				"type": "string"
+			},
+			{
+				"key": "tokenName",
+				"value": "Oath 2.0 Google",
+				"type": "string"
+			},
+			{
+				"key": "addTokenTo",
+				"value": "header",
+				"type": "string"
+			}
+		]
+	},
 	"event": [
 		{
 			"listen": "prerequest",
