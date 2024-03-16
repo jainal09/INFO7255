@@ -38,7 +38,7 @@ public class InsuranceController {
         System.out.println(insurancePlan.get("objectId").textValue());
         LinkedHashMap plan = insuranceImpl.find(insurancePlan.get("objectId").textValue());
         if (!plan.isEmpty()) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insurance plan already exists.");
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("Insurance plan already exists.");
         }
         String result = insuranceImpl.save(insurancePlan);
         // send 201 created status or if incorrect json data send 400 bad request
