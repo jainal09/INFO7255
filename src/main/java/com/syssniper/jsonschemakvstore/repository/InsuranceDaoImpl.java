@@ -94,8 +94,6 @@ public LinkedHashMap addNewLinkedPlanService(String id, JsonNode linkedPlanServi
 
     @Override
     public Object[] findAll() {
-        System.out.println("type" + redisTemplate.opsForHash().entries("linkedPlanServices").getClass());
-        redisTemplate.opsForHash().entries("linkedPlanServices").forEach((key, value) -> System.out.println(key));
         LinkedHashMap result_linkedPlanServices = (LinkedHashMap)redisTemplate.opsForHash().entries("linkedPlanServices");
         LinkedHashMap result_planCostShares = (LinkedHashMap)redisTemplate.opsForHash().entries("planCostShares");
         LinkedHashMap result_insurancePlan = (LinkedHashMap)redisTemplate.opsForHash().entries("insurancePlan");

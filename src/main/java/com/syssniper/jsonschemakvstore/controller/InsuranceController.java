@@ -71,7 +71,6 @@ public class InsuranceController {
         }
 
         String currentEtag = getEtag(plan);
-        System.out.println(currentEtag + "current etag");
         if (eTag != null && eTag.equals(currentEtag)) {
             // ETag matches, return  304 Not Modified
             LinkedHashMap body = insuranceImpl.addNewLinkedPlanService(id, linkedPlanServices);
@@ -88,11 +87,9 @@ public class InsuranceController {
     private String getEtag(LinkedHashMap plan) throws NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.valueToTree(plan);
-        System.out.println(jsonNode.toString());
         return generateEtag(jsonNode.toString());
     }
      private String getEtag(JsonNode plan) throws NoSuchAlgorithmException {
-         System.out.println(plan.toString());
          return generateEtag(plan.toString());
     }
 
