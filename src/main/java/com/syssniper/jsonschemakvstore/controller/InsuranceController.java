@@ -100,11 +100,15 @@ public class InsuranceController {
 
     @PutMapping("/{id}")
     public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan, @PathVariable String id) throws JsonProcessingException {
-        if(insuranceImpl.update(id, insurancePlan)){
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan Updated.");
+        String response = insuranceImpl.update(id, insurancePlan);
+        if(response.equals("Invalid JSON data")){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Json Schema Validation Failed");
 
-        }else {
+        } else if (response.equals("Insurance plan not found.")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance plan not found.");
+        } else {
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan updated.");
+
         }
     }
 

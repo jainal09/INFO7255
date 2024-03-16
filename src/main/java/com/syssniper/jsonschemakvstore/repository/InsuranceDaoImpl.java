@@ -121,11 +121,14 @@ public LinkedHashMap addNewLinkedPlanService(String id, JsonNode linkedPlanServi
 
 
     @Override
-    public boolean update(String objectId, JsonNode insurancePlan) {
+    public String update(String objectId, JsonNode insurancePlan) {
+        String x = validateJsonReq(insurancePlan, "/schemas/post_schema.json");
+        if (x != null) return "Invalid JSON data";
         if (findById(objectId)) {
             saveJsonData(insurancePlan, objectId);
+            return "Insurance plan updated.";
         }
-        return false;
+        return "Insurance plan not found.";
 
     }
 

@@ -9,6 +9,6 @@ public interface InsuranceRepository {
     String save(JsonNode insurancePlan) throws JsonProcessingException;
     LinkedHashMap find(String id);
     Object[] findAll();
-    boolean update(String objectId, JsonNode insurancePlan) throws JsonProcessingException;
+    String update(String objectId, JsonNode insurancePlan) throws JsonProcessingException;
     boolean delete(String id);
 }
