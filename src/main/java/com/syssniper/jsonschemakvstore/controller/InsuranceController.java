@@ -33,7 +33,7 @@ public class InsuranceController {
         return sb.toString();
     }
 
-    @RequestMapping("/save")
+    @RequestMapping("/post/save")
     public ResponseEntity<String> save(@RequestBody JsonNode insurancePlan) throws NoSuchAlgorithmException, JsonProcessingException {
         System.out.println(insurancePlan.get("objectId").textValue());
         LinkedHashMap plan = insuranceImpl.find(insurancePlan.get("objectId").textValue());
@@ -49,7 +49,7 @@ public class InsuranceController {
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     public ResponseEntity<?> get(@PathVariable String id, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag) throws NoSuchAlgorithmException {
         LinkedHashMap plan = insuranceImpl.find(id);
         if (plan.isEmpty()) {
@@ -66,7 +66,7 @@ public class InsuranceController {
         }
     }
 
-    @PatchMapping("/{id}")
+    @PatchMapping("/patch/{id}")
     public ResponseEntity<?> patch(@PathVariable String id,
                                     @RequestBody JsonNode linkedPlanServices,
                                    @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag)
@@ -101,7 +101,7 @@ public class InsuranceController {
          return generateEtag(plan.toString());
     }
 
-    @GetMapping("/all")
+    @GetMapping("/get/all")
     public ResponseEntity<Object[]> getAll(
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag
     ) throws NoSuchAlgorithmException {
@@ -114,7 +114,7 @@ public class InsuranceController {
         return ResponseEntity.ok().header(HttpHeaders.ETAG, currentEtag).body(result);
     }
 
-    @PutMapping("/{id}")
+    @PutMapping("/put/{id}")
     public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan,
                                           @PathVariable String id,
                                            @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException {
@@ -139,7 +139,7 @@ public class InsuranceController {
         }
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
         if (insuranceImpl.delete(id)) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan deleted.");
