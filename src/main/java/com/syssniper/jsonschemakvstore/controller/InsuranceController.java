@@ -39,7 +39,7 @@ public class InsuranceController {
         if (result.equals("Invalid JSON data")) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
         }
-        String etag = generateEtag(insurancePlan.toString());
+        String etag = getEtag(insurancePlan);
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);
     }
 
@@ -71,9 +71,13 @@ public class InsuranceController {
         }
 
         String currentEtag = getEtag(plan);
+        System.out.println(currentEtag + "current etag");
         if (eTag != null && eTag.equals(currentEtag)) {
             // ETag matches, return  304 Not Modified
             LinkedHashMap body = insuranceImpl.addNewLinkedPlanService(id, linkedPlanServices);
+            if(body == null){
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Json");
+            }
             return ResponseEntity.status(HttpStatus.OK).header(HttpHeaders.ETAG, currentEtag).body(body);
         } else {
             // ETag does not match or was not provided, return missmatch error
@@ -84,8 +88,12 @@ public class InsuranceController {
     private String getEtag(LinkedHashMap plan) throws NoSuchAlgorithmException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.valueToTree(plan);
-        String currentEtag = generateEtag(jsonNode.toString()); // Assuming you have a method to generate the ETag
-        return currentEtag;
+        System.out.println(jsonNode.toString());
+        return generateEtag(jsonNode.toString());
+    }
+     private String getEtag(JsonNode plan) throws NoSuchAlgorithmException {
+         System.out.println(plan.toString());
+         return generateEtag(plan.toString());
     }
 
     @GetMapping("/all")
@@ -94,9 +102,13 @@ public class InsuranceController {
     }
 
     @PutMapping("/{id}")
-    public String update(@RequestBody JsonNode insurancePlan, @PathVariable String id) throws JsonProcessingException {
-        insuranceImpl.update(id, insurancePlan);
-        return "Insurance plan updated.";
+    public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan, @PathVariable String id) throws JsonProcessingException {
+        if(insuranceImpl.update(id, insurancePlan)){
+            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan Updated.");
+
+        }else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance plan not found.");
+        }
     }
 
     @DeleteMapping("/{id}")

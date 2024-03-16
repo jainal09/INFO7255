@@ -1,6 +1,5 @@
 package com.syssniper.jsonschemakvstore.repository;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -31,6 +30,8 @@ public class InsuranceDaoImpl implements InsuranceRepository {
     }
 
     private String saveJsonData(JsonNode insurancePlan, String objectId) {
+        String x = validateJsonReq(insurancePlan, "/schemas/post_schema.json");
+        if (x != null) return x;
         redisTemplate.opsForHash().put("planCostShares",
                 objectId,
                 insurancePlan.get("planCostShares"));
@@ -47,10 +48,14 @@ public class InsuranceDaoImpl implements InsuranceRepository {
         insuranceNode.put("creationDate", insurancePlan.get("creationDate").textValue());
         redisTemplate.opsForHash().put("insurancePlan", insuranceNode.get("objectId").textValue(),
                 insuranceNode);
-        if (!jsonValidationService.validateJsonAgainstSchema(insurancePlan.toString())) {
+        return "Insurance plan saved.";
+    }
+
+    private String validateJsonReq(JsonNode insurancePlan, String schemaPath) {
+        if (!jsonValidationService.validateJsonAgainstSchema(insurancePlan.toString(), schemaPath)) {
             return "Invalid JSON data";
         }
-        return "Insurance plan saved.";
+        return null;
     }
 
 
@@ -61,15 +66,17 @@ public class InsuranceDaoImpl implements InsuranceRepository {
             Object result_planCostShares = redisTemplate.opsForHash().get("planCostShares", id);
             Object result_linkedPlanServices = redisTemplate.opsForHash().get("linkedPlanServices", id);
             LinkedHashMap result_insuranceData = (LinkedHashMap) redisTemplate.opsForHash().get("insurancePlan", id);
+            generateInsuranceMap(result_insuranceData, result);
             result.put("planCostShares", result_planCostShares);
             result.put("linkedPlanServices", result_linkedPlanServices);
-            generateInsuranceMap(result_insuranceData, result);
         }
-        return (LinkedHashMap) result;
+        return result;
     }
 
 
 public LinkedHashMap addNewLinkedPlanService(String id, JsonNode linkedPlanService) {
+         String x = validateJsonReq(linkedPlanService, "/schemas/patch_schema.json");
+        if (x != null) return null;
     ObjectMapper objectMapper = new ObjectMapper();
     LinkedHashMap result = find(id);
     if (result == null) {
@@ -116,19 +123,18 @@ public LinkedHashMap addNewLinkedPlanService(String id, JsonNode linkedPlanServi
 
 
     @Override
-    public void update(String objectId, JsonNode insurancePlan){
-        saveJsonData(insurancePlan, objectId);
+    public boolean update(String objectId, JsonNode insurancePlan) {
+        if (findById(objectId)) {
+            saveJsonData(insurancePlan, objectId);
+        }
+        return false;
+
     }
 
     public boolean findById(String id) {
-        if (redisTemplate.opsForHash().hasKey("linkedPlanServices", id) &&
+        return redisTemplate.opsForHash().hasKey("linkedPlanServices", id) &&
                 redisTemplate.opsForHash().hasKey("planCostShares", id) &&
-                redisTemplate.opsForHash().hasKey("insurancePlan", id)
-        ) {
-            return true;
-        } else {
-            return false;
-        }
+                redisTemplate.opsForHash().hasKey("insurancePlan", id);
     }
 
     @Override

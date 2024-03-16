@@ -17,9 +17,8 @@ public class PlanValidationService {
 
     private final ObjectMapper mapper = new ObjectMapper();
 
-    public boolean validateJsonAgainstSchema(String jsonData) {
+    public boolean validateJsonAgainstSchema(String jsonData, String schemaPath) {
         // fetch schema from resources directory
-        String schemaPath = "/schema.json";
         try {
             JsonSchemaFactory factory = JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
             InputStream schemaInputStream = getClass().getResourceAsStream(schemaPath);
