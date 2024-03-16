@@ -109,10 +109,9 @@ public class InsuranceController {
                                            @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException {
         LinkedHashMap plan = insuranceImpl.find(id);
         String currentEtag = getEtag(plan);
-        System.out.println(currentEtag);
-        if (eTag != null && eTag.equals(currentEtag)) {
+        if (eTag != null && !eTag.equals(currentEtag)) {
             // ETag matches, return  304 Not Modified
-            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+            return ResponseEntity.status(HttpStatus.PRECONDITION_FAILED).body("ETag mismatch");
         }
 
         String response = insuranceImpl.update(id, insurancePlan);
