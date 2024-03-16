@@ -35,16 +35,14 @@ public class InsuranceController {
 
     @RequestMapping("/save")
     public ResponseEntity<String> save(@RequestBody JsonNode insurancePlan) throws NoSuchAlgorithmException, JsonProcessingException {
-        System.out.println(insurancePlan.get("objectId").textValue());
+        String x = insuranceImpl.validateJsonReq(insurancePlan, "/schemas/post_schema.json");
+        if (x != null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Json");;
         LinkedHashMap plan = insuranceImpl.find(insurancePlan.get("objectId").textValue());
         if (!plan.isEmpty()) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Insurance plan already exists.");
         }
         String result = insuranceImpl.save(insurancePlan);
         // send 201 created status or if incorrect json data send 400 bad request
-        if (result.equals("Invalid JSON data")) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(result);
-        }
         String etag = getEtag(insurancePlan);
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);
     }

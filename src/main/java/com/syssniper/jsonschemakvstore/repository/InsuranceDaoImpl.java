@@ -30,8 +30,6 @@ public class InsuranceDaoImpl implements InsuranceRepository {
     }
 
     private String saveJsonData(JsonNode insurancePlan, String objectId) {
-        String x = validateJsonReq(insurancePlan, "/schemas/post_schema.json");
-        if (x != null) return x;
         redisTemplate.opsForHash().put("planCostShares",
                 objectId,
                 insurancePlan.get("planCostShares"));
@@ -51,7 +49,7 @@ public class InsuranceDaoImpl implements InsuranceRepository {
         return "Insurance plan saved.";
     }
 
-    private String validateJsonReq(JsonNode insurancePlan, String schemaPath) {
+    public String validateJsonReq(JsonNode insurancePlan, String schemaPath) {
         if (!jsonValidationService.validateJsonAgainstSchema(insurancePlan.toString(), schemaPath)) {
             return "Invalid JSON data";
         }
