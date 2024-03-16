@@ -99,7 +99,17 @@ public class InsuranceController {
     }
 
     @PutMapping("/{id}")
-    public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan, @PathVariable String id) throws JsonProcessingException {
+    public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan,
+                                          @PathVariable String id,
+                                           @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException {
+        LinkedHashMap plan = insuranceImpl.find(id);
+        String currentEtag = getEtag(plan);
+        System.out.println(currentEtag);
+        if (eTag != null && eTag.equals(currentEtag)) {
+            // ETag matches, return  304 Not Modified
+            return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
+        }
+
         String response = insuranceImpl.update(id, insurancePlan);
         if(response.equals("Invalid JSON data")){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Json Schema Validation Failed");
@@ -107,7 +117,9 @@ public class InsuranceController {
         } else if (response.equals("Insurance plan not found.")) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Insurance plan not found.");
         } else {
-            return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan updated.");
+                LinkedHashMap new_plan = insuranceImpl.find(id);
+                String newEtag = getEtag(new_plan);
+            return ResponseEntity.status(HttpStatus.ACCEPTED).header(HttpHeaders.ETAG, newEtag).body("Insurance plan updated.");
 
         }
     }
