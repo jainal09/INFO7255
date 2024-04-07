@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syssniper.jsonschemakvstore.repository.InsuranceDaoImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,8 +21,16 @@ import java.util.LinkedHashMap;
 @RequestMapping("/api")
 public class InsuranceController {
 
+    private final StreamBridge streamBridge;
+
     @Autowired
     private InsuranceDaoImpl insuranceImpl;
+
+    @Autowired
+    public InsuranceController(StreamBridge streamBridge) {
+        this.streamBridge = streamBridge;
+    }
+
 
     private String generateEtag(String planDataString) throws NoSuchAlgorithmException {
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -42,6 +51,7 @@ public class InsuranceController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Insurance plan already exists.");
         }
         String result = insuranceImpl.save(insurancePlan);
+        streamBridge.send("output", insurancePlan);
         // send 201 created status or if incorrect json data send 400 bad request
         String etag = getEtag(insurancePlan);
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);

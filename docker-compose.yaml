@@ -163,6 +163,7 @@ services:
     - REDIS_HOSTS=local:redis:6379
     ports:
     - "8081:8081"
+
   kafka:
     image: docker.io/bitnami/kafka:3.5
     hostname: kafka
@@ -212,7 +213,7 @@ services:
             - name: local-connect-cluster
               url: http://connect:8083
     ports:
-      - 8080:8080
+      - 7070:8080
     depends_on:
       kafka:
         condition: service_healthy
