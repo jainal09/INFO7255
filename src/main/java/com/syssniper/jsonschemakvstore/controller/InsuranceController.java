@@ -1,21 +1,33 @@
 package com.syssniper.jsonschemakvstore.controller;
 
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
+import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
+import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsRequest;
+import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsResponse;
+import org.elasticsearch.client.Client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syssniper.jsonschemakvstore.repository.InsuranceDaoImpl;
+import org.elasticsearch.client.ElasticsearchClient;
+import org.elasticsearch.client.RequestOptions;
+import org.elasticsearch.client.RestHighLevelClient;
+import org.elasticsearch.common.settings.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
+import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -30,6 +42,9 @@ public class InsuranceController {
     public InsuranceController(StreamBridge streamBridge) {
         this.streamBridge = streamBridge;
     }
+
+    @Autowired
+    private RestHighLevelClient client;
 
 
     private String generateEtag(String planDataString) throws NoSuchAlgorithmException {
@@ -112,7 +127,10 @@ public class InsuranceController {
     @GetMapping("/get/all")
     public ResponseEntity<Object[]> getAll(
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag
-    ) throws NoSuchAlgorithmException {
+    ) throws NoSuchAlgorithmException, IOException {
+        ClusterHealthRequest request = new ClusterHealthRequest();
+        ClusterHealthResponse response = client.cluster().health(request, RequestOptions.DEFAULT);
+        System.out.println("Cluster Name: " + response.getClusterName());
         Object[] result = insuranceImpl.findAll();
         String currentEtag = generateEtag(Arrays.toString(result));
          if (eTag != null && !eTag.equals(currentEtag)) {
