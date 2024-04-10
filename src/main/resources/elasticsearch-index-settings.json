@@ -8,6 +8,18 @@
   "mappings": {
     "properties": {
       "planCostShares": {
+        "type": "join",
+        "relations": {
+          "planCostShares": "linkedPlanServices"
+        }
+      },
+      "linkedPlanServices": {
+        "type": "join",
+        "relations": {
+          "linkedPlanServices": "planCostShares"
+        }
+      },
+      "planCostShares": {
         "type": "nested",
         "properties": {
           "deductible": {

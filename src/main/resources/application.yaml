@@ -6,6 +6,8 @@
 #        rest:
 #          endpoints: localhost:9200
 spring:
+  main:
+    allow-bean-definition-overriding: true
   elasticsearch:
     rest:
       uris: http://localhost:9200
