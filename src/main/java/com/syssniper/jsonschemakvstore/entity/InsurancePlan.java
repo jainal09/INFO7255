@@ -13,11 +13,11 @@ import org.springframework.data.redis.core.RedisHash;
 @Setter
 @ToString
 @EqualsAndHashCode
-@Document(indexName = "insurance")
+@Document(indexName = "insurance-plans")
 @RedisHash("insurance-data")
 public class InsurancePlan {
-    @Id
-    private String id; // Add this ID field
+//    @Id
+//    private String id; // Add this ID field
 
     private JsonNode plan_data;
 }

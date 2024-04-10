@@ -1,5 +1,6 @@
 package com.syssniper.jsonschemakvstore.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syssniper.jsonschemakvstore.entity.InsurancePlan;
@@ -21,10 +22,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 
 import java.io.IOException;
-
 @Configuration
 public class KafkaConsumerConfig {
-
     private final ElasticsearchOperations elasticsearchOperations;
     private final ObjectMapper objectMapper;
 
@@ -35,24 +34,31 @@ public class KafkaConsumerConfig {
     }
 
     @Bean
-    public Consumer<Flux<String>> input() {
-        return messages -> messages.subscribe(message -> {
-            System.out.println("Received message: " + message);
-            // Process the message here and save it in Elasticsearch
-            saveToElasticsearch(message);
-        });
+    public Consumer<Flux<JsonNode>> input() {
+        return messages -> messages.subscribe(this::saveToElasticsearch);
     }
 
-    private void saveToElasticsearch(String message) {
+    private void saveToElasticsearch(JsonNode message) {
         try {
-            // Parse the JSON message into JsonNode
-            JsonNode jsonNode = objectMapper.readTree(message);
-            // Save the JsonNode into Elasticsearch
-            elasticsearchOperations.save(jsonNode);
-        } catch (IOException e) {
-            // Handle parsing error
+            // Extract the objectId from the message
+            String objectId = message.get("objectId").textValue();
+            if (objectId == null) {
+                throw new IllegalArgumentException("objectId is missing in the message");
+            }
+
+            // Create an InsurancePlan object from the JsonNode
+            InsurancePlan insurancePlan = objectMapper.treeToValue(message, InsurancePlan.class);
+
+            // Index the InsurancePlan object to Elasticsearch
+            IndexQuery indexQuery = new IndexQueryBuilder()
+                    .withId(objectId)
+                    .withObject(insurancePlan)
+                    .build();
+            elasticsearchOperations.index(indexQuery, IndexCoordinates.of("insurance-plans"));
+        } catch (Exception e) {
+            // Handle exceptions, e.g., log the error and the message
+            System.err.println("Failed to index message: " + message);
             e.printStackTrace();
-            System.err.println("Failed to parse message: " + message);
         }
     }
 }
