@@ -2,20 +2,14 @@ package com.syssniper.jsonschemakvstore.controller;
 
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
-import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsRequest;
-import org.elasticsearch.action.admin.cluster.settings.ClusterGetSettingsResponse;
-import org.elasticsearch.client.Client;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.syssniper.jsonschemakvstore.repository.InsuranceDaoImpl;
-import org.elasticsearch.client.ElasticsearchClient;
 import org.elasticsearch.client.RequestOptions;
 import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.settings.Settings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.stream.function.StreamBridge;
-import org.springframework.data.elasticsearch.core.ElasticsearchOperations;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +21,6 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -57,7 +50,7 @@ public class InsuranceController {
         return sb.toString();
     }
 
-    @RequestMapping("/post/save")
+    @RequestMapping("/save")
     public ResponseEntity<String> save(@RequestBody JsonNode insurancePlan) throws NoSuchAlgorithmException, JsonProcessingException {
         String x = insuranceImpl.validateJsonReq(insurancePlan, "/schemas/post_schema.json");
         if (x != null) return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid Json");;
@@ -72,7 +65,7 @@ public class InsuranceController {
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);
     }
 
-    @GetMapping("/get/{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<?> get(@PathVariable String id, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag) throws NoSuchAlgorithmException {
         LinkedHashMap plan = insuranceImpl.find(id);
         if (plan.isEmpty()) {
@@ -89,7 +82,7 @@ public class InsuranceController {
         }
     }
 
-    @PatchMapping("/patch/{id}")
+    @PatchMapping("/{id}")
     public ResponseEntity<?> patch(@PathVariable String id,
                                     @RequestBody JsonNode linkedPlanServices,
                                    @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag)
@@ -124,7 +117,7 @@ public class InsuranceController {
          return generateEtag(plan.toString());
     }
 
-    @GetMapping("/get/all")
+    @GetMapping("/all")
     public ResponseEntity<Object[]> getAll(
             @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag
     ) throws NoSuchAlgorithmException, IOException {
@@ -140,7 +133,7 @@ public class InsuranceController {
         return ResponseEntity.ok().header(HttpHeaders.ETAG, currentEtag).body(result);
     }
 
-    @PutMapping("/put/{id}")
+    @PutMapping("/{id}")
     public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan,
                                           @PathVariable String id,
                                            @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException {
@@ -165,7 +158,7 @@ public class InsuranceController {
         }
     }
 
-    @DeleteMapping("/delete/{id}")
+    @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
         if (insuranceImpl.delete(id)) {
             return ResponseEntity.status(HttpStatus.ACCEPTED).body("Insurance plan deleted.");
