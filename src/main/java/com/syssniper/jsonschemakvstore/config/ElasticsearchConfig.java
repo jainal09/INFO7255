@@ -19,6 +19,21 @@ import javax.net.ssl.SSLContext;
 @Configuration
 public class ElasticsearchConfig {
 
+    @Value("${elasticsearch.host}")
+    private String esHost;
+
+    @Value("${elasticsearch.port}")
+    private int esPort;
+
+    @Value("${elasticsearch.scheme}")
+    private String esScheme;
+
+    @Value("${elasticsearch.username}")
+    private String esUsername;
+
+    @Value("${elasticsearch.password}")
+    private String esPassword;
+
     @Bean
     public RestHighLevelClient client() throws Exception {
         SSLContext sslContext = SSLContexts.custom()
@@ -27,10 +42,10 @@ public class ElasticsearchConfig {
 
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("elastic", "root123"));
+                new UsernamePasswordCredentials("esUsername", "esPassword"));
 
         return new RestHighLevelClient(
-                RestClient.builder(new HttpHost("localhost", 9200, "https"))
+                RestClient.builder(new HttpHost(esHost, esPort, esScheme))
                         .setHttpClientConfigCallback(httpClientBuilder ->
                                 httpClientBuilder.setSSLContext(sslContext)
                                         .setSSLHostnameVerifier(NoopHostnameVerifier.INSTANCE)
