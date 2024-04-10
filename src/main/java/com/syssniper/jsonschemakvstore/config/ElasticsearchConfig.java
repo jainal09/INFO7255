@@ -19,12 +19,6 @@ import javax.net.ssl.SSLContext;
 @Configuration
 public class ElasticsearchConfig {
 
-    @Value("${elasticsearch.username}")
-    private String username;
-
-    @Value("${elasticsearch.password}")
-    private String password;
-
     @Bean
     public RestHighLevelClient client() throws Exception {
         SSLContext sslContext = SSLContexts.custom()
@@ -33,7 +27,7 @@ public class ElasticsearchConfig {
 
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials(username, password));
+                new UsernamePasswordCredentials("elastic", "root123"));
 
         return new RestHighLevelClient(
                 RestClient.builder(new HttpHost("localhost", 9200, "https"))
