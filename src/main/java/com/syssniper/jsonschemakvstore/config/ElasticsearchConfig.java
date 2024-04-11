@@ -42,7 +42,7 @@ public class ElasticsearchConfig {
 
         CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
         credentialsProvider.setCredentials(AuthScope.ANY,
-                new UsernamePasswordCredentials("esUsername", "esPassword"));
+                new UsernamePasswordCredentials(esUsername, esPassword));
 
         return new RestHighLevelClient(
                 RestClient.builder(new HttpHost(esHost, esPort, esScheme))
