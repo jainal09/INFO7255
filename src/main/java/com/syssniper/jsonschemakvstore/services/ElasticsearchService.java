@@ -21,11 +21,11 @@ public class ElasticsearchService {
         this.esClient = esClient;
     }
 
-    public void indexDocument(String indexName, String documentId, JsonNode jsonNode) throws IOException {
+    public void indexDocument(String indexName, String documentId, JsonNode jsonNode, String routing) throws IOException {
 
         Request request = new Request("POST", "/" + indexName + "/_doc/" + documentId);
         request.setJsonEntity(jsonNode.toPrettyString());
-
+        request.addParameter("routing", routing);
         esClient.getLowLevelClient().performRequest(request);
         logger.info("Document indexed successfully");
     }
