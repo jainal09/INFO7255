@@ -56,11 +56,12 @@ public class KafkaConsumerConfig {
                         JsonNode linkedPlanServicesNode = message.get("linkedPlanServices");
                         for (JsonNode linkedPlanService : linkedPlanServicesNode) {
                             String linkedPlanServiceObjectId = linkedPlanService.get("objectId").textValue();
-                            if (linkedPlanService.has("planServiceCostShares")) {
-                                JsonNode planServiceCostSharesNode = linkedPlanService.get("planServiceCostShares");
+                            if (linkedPlanService.has("planserviceCostShares")) {
+                                System.out.println("Aslamwalikum brother");
+                                JsonNode planServiceCostSharesNode = linkedPlanService.get("planserviceCostShares");
                                 ObjectMapper pscs_mapper = new ObjectMapper();
                                 ObjectNode PSCSObject = pscs_mapper.createObjectNode();
-                                PSCSObject.put("name", "planServiceCostShares");
+                                PSCSObject.put("name", "planserviceCostShares");
                                 PSCSObject.put("parent", linkedPlanService.get("objectId").textValue());
                                 ((ObjectNode) planServiceCostSharesNode).set("plan_join", PSCSObject);
                                 messageIndexService.indexDocument(index, planServiceCostSharesNode.get("objectId").textValue(), planServiceCostSharesNode, linkedPlanServiceObjectId);
