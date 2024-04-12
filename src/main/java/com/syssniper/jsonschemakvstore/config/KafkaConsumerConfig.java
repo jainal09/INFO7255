@@ -42,7 +42,12 @@ public class KafkaConsumerConfig {
                         baseNode.put("objectType", message.get("objectType").textValue());
                         baseNode.put("planType", message.get("planType").textValue());
                         baseNode.put("creationDate", message.get("creationDate").textValue());
-                        messageIndexService.indexDocument(index, objectId, baseNode,"");
+                        ObjectMapper base_mappper = new ObjectMapper();
+                        ObjectNode BaseObject = base_mappper.createObjectNode();
+                        BaseObject.put("name", "plan");
+                        BaseObject.put("parent", " ");
+                        baseNode.set("plan_join", BaseObject);
+                        messageIndexService.indexDocument(index, objectId, baseNode," ");
 
                         JsonNode planCostSharesNode = message.get("planCostShares");
                         ObjectMapper pcs_mapper = new ObjectMapper();
@@ -57,7 +62,6 @@ public class KafkaConsumerConfig {
                         for (JsonNode linkedPlanService : linkedPlanServicesNode) {
                             String linkedPlanServiceObjectId = linkedPlanService.get("objectId").textValue();
                             if (linkedPlanService.has("planserviceCostShares")) {
-                                System.out.println("Aslamwalikum brother");
                                 JsonNode planServiceCostSharesNode = linkedPlanService.get("planserviceCostShares");
                                 ObjectMapper pscs_mapper = new ObjectMapper();
                                 ObjectNode PSCSObject = pscs_mapper.createObjectNode();
