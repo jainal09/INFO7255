@@ -141,7 +141,7 @@ private String convertNode(final JsonNode node) throws JsonProcessingException {
         System.out.println("Cluster Name: " + response.getClusterName());
         Object[] result = insuranceImpl.findAll();
         String currentEtag = generateEtag(Arrays.toString(result));
-         if (eTag != null && !eTag.equals(currentEtag)) {
+         if (eTag != null && eTag.equals(currentEtag)) {
             // ETag matches, return  304 Not Modified
             return ResponseEntity.status(HttpStatus.NOT_MODIFIED).build();
         }
