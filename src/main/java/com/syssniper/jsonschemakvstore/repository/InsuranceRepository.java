@@ -12,3 +12,5 @@ public interface InsuranceRepository {
     String update(String objectId, JsonNode insurancePlan) throws JsonProcessingException;
     boolean delete(String id);
 }
+
+

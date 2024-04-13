@@ -1,5 +1,6 @@
 package com.syssniper.jsonschemakvstore.controller;
 
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthRequest;
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -35,6 +36,16 @@ public class InsuranceController {
     public InsuranceController(StreamBridge streamBridge) {
         this.streamBridge = streamBridge;
     }
+    private static final ObjectMapper SORTED_MAPPER = new ObjectMapper();
+    static {
+        SORTED_MAPPER.configure(SerializationFeature.ORDER_MAP_ENTRIES_BY_KEYS, true);
+    }
+
+private String convertNode(final JsonNode node) throws JsonProcessingException {
+    final Object obj = SORTED_MAPPER.treeToValue(node, Object.class);
+    final String json = SORTED_MAPPER.writeValueAsString(obj);
+    return json;
+}
 
     @Autowired
     private RestHighLevelClient client;
@@ -59,14 +70,14 @@ public class InsuranceController {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("Insurance plan already exists.");
         }
         String result = insuranceImpl.save(insurancePlan);
-        streamBridge.send("output", insurancePlan);
+        streamBridge.send("output-0", insurancePlan);
         // send 201 created status or if incorrect json data send 400 bad request
         String etag = getEtag(insurancePlan);
         return ResponseEntity.status(HttpStatus.CREATED).header("ETag", etag).body(result);
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> get(@PathVariable String id, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag) throws NoSuchAlgorithmException {
+    public ResponseEntity<?> get(@PathVariable String id, @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag) throws NoSuchAlgorithmException, JsonProcessingException {
         LinkedHashMap plan = insuranceImpl.find(id);
         if (plan.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -86,7 +97,7 @@ public class InsuranceController {
     public ResponseEntity<?> patch(@PathVariable String id,
                                     @RequestBody JsonNode linkedPlanServices,
                                    @RequestHeader(value = HttpHeaders.IF_NONE_MATCH, required = false) String eTag)
-            throws NoSuchAlgorithmException {
+            throws NoSuchAlgorithmException, JsonProcessingException {
         LinkedHashMap plan = insuranceImpl.find(id);
         if (plan.isEmpty()) {
             return ResponseEntity.notFound().build();
@@ -108,13 +119,17 @@ public class InsuranceController {
         }
     }
 
-    private String getEtag(LinkedHashMap plan) throws NoSuchAlgorithmException {
+    private String getEtag(LinkedHashMap plan) throws NoSuchAlgorithmException, JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         JsonNode jsonNode = mapper.valueToTree(plan);
-        return generateEtag(jsonNode.toString());
+        String planString = convertNode(jsonNode);
+        System.out.println("Plan: " + planString);
+        return generateEtag(planString);
     }
-     private String getEtag(JsonNode plan) throws NoSuchAlgorithmException {
-         return generateEtag(plan.toString());
+     private String getEtag(JsonNode plan) throws NoSuchAlgorithmException, JsonProcessingException {
+        String planString = convertNode(plan);
+         System.out.println("Plan: " + planString);
+         return generateEtag(planString);
     }
 
     @GetMapping("/all")
@@ -136,7 +151,7 @@ public class InsuranceController {
     @PutMapping("/{id}")
     public  ResponseEntity<String> update(@RequestBody JsonNode insurancePlan,
                                           @PathVariable String id,
-                                           @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException {
+                                           @RequestHeader(value = HttpHeaders.IF_NONE_MATCH) String eTag) throws NoSuchAlgorithmException, JsonProcessingException {
         LinkedHashMap plan = insuranceImpl.find(id);
         String currentEtag = getEtag(plan);
         if (eTag != null && !eTag.equals(currentEtag)) {

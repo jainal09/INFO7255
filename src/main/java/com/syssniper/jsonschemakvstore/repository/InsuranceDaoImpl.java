@@ -3,8 +3,10 @@ package com.syssniper.jsonschemakvstore.repository;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.syssniper.jsonschemakvstore.services.ObjectNodeCreationService;
 import com.syssniper.jsonschemakvstore.services.PlanValidationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.function.StreamBridge;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -16,12 +18,19 @@ public class InsuranceDaoImpl implements InsuranceRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final PlanValidationService jsonValidationService;
+    private final StreamBridge streamBridge;
 
     @Autowired
-    public InsuranceDaoImpl(RedisTemplate<String, Object> redisTemplate, PlanValidationService jsonValidationService) {
+    public InsuranceDaoImpl(RedisTemplate<String, Object> redisTemplate,
+                            PlanValidationService jsonValidationService,
+                            StreamBridge streamBridge) {
         this.redisTemplate = redisTemplate;
         this.jsonValidationService = jsonValidationService;
+        this.streamBridge = streamBridge;
     }
+
+    @Autowired
+    public ObjectNodeCreationService objectNodeCreationService;
 
     @Override
     public String save(JsonNode insurancePlan) {
@@ -36,14 +45,7 @@ public class InsuranceDaoImpl implements InsuranceRepository {
         redisTemplate.opsForHash().put("linkedPlanServices",
                 objectId,
                 insurancePlan.get("linkedPlanServices"));
-        ObjectMapper mapper = new ObjectMapper();
-        ObjectNode insuranceNode = mapper.createObjectNode();
-
-        insuranceNode.put("_org", insurancePlan.get("_org").textValue());
-        insuranceNode.put("objectId", objectId);
-        insuranceNode.put("objectType", insurancePlan.get("objectType").textValue());
-        insuranceNode.put("planType", insurancePlan.get("planType").textValue());
-        insuranceNode.put("creationDate", insurancePlan.get("creationDate").textValue());
+        JsonNode insuranceNode = objectNodeCreationService.createParentNode(insurancePlan);
         redisTemplate.opsForHash().put("insurancePlan", insuranceNode.get("objectId").textValue(),
                 insuranceNode);
         return "Insurance plan saved.";
@@ -87,6 +89,11 @@ public LinkedHashMap addNewLinkedPlanService(String id, JsonNode linkedPlanServi
     result.put("linkedPlanServices", linkedPlanServices);
     // save the updated plan
     redisTemplate.opsForHash().put("linkedPlanServices", id, result.get("linkedPlanServices"));
+    // convert the linkedPlanService to ObjectNode
+    ObjectNode linkedPlanServiceNode = objectMapper.convertValue(linkedPlanServiceMap, ObjectNode.class);
+    // add new value parentId to the linkedPlanService
+    linkedPlanServiceNode.put("parentId", id);
+    streamBridge.send("output-1", (JsonNode)linkedPlanServiceNode);
     return result;
 }
 

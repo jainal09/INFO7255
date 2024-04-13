@@ -22,7 +22,6 @@ public class ElasticsearchService {
     }
 
     public void indexDocument(String indexName, String documentId, JsonNode jsonNode, String routing) throws IOException {
-
         Request request = new Request("POST", "/" + indexName + "/_doc/" + documentId);
         request.setJsonEntity(jsonNode.toPrettyString());
         request.addParameter("routing", routing);
